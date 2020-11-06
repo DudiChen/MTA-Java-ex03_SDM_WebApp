@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
-@WebServlet(name = "StoreOrdersApproveServlet", urlPatterns = {"/api/areas/stores/orders/approve"})
+@WebServlet(name = "StoreOrdersApproveServlet", urlPatterns = {"/api/areas/stores/orders/approved"})
 public class StoreOrdersApproveServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
