@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="SDM:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/SDM_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="SDM/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="SDM" />
+          <element id="module-output" name="Model" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="gson-2.1" />
+          <element id="library" level="project" name="tomcat-catalina-8.5.51" />
+        </element>
+      </element>
+      <element id="module-output" name="SDM" />
+    </root>
+  </artifact>
+</component>
