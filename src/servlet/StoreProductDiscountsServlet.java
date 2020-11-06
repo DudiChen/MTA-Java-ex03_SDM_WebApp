@@ -42,9 +42,9 @@ public class StoreProductDiscountsServlet extends HttpServlet {
         String reply = "";
         Gson gson = new Gson();
         JsonElement temp = gson.toJsonTree(discountDTOS);
-        JsonArray productsListJSON = temp.getAsJsonArray();
+        JsonArray discountsJSON = temp.getAsJsonArray();
         JsonObject replyJSON = new JsonObject();
-        replyJSON.add("allDiscounts", productsListJSON);
+        replyJSON.add("allDiscounts", discountsJSON);
         reply = String.valueOf(replyJSON);
         response.getWriter().write(reply);
         response.getWriter().close();

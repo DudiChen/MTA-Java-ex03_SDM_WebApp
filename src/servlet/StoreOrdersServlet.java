@@ -64,8 +64,10 @@ public class StoreOrdersServlet extends HttpServlet {
             isValid = false;
         } else {
             List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(discount -> new DiscountDTO(discount, Integer.parseInt(areaId))).collect(Collectors.toList());
-            String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
-            replyJSON.addProperty("discounts", availableDiscountsStr);
+//            String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
+            JsonElement temp = gson.toJsonTree(availableDiscountDTOs);
+            JsonArray discountsJSON = temp.getAsJsonArray();
+            replyJSON.add("discounts", discountsJSON);
         }
         JsonElement productsJSON = gson.toJsonTree(storeProductsSTOs);
         replyJSON.add("products", productsJSON);
