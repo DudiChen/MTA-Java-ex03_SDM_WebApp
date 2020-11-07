@@ -53,6 +53,10 @@ public class Controller {
             int newAreaId = MarketUtils.generateIdForArea(market);
             area = new
                     AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
+            boolean isAreaAlreadyExist = this.market.isAreaExistsByName(area.getName());
+            if (isAreaAlreadyExist) {
+                throw new ValidationException("Area name already exists: \"" + area.getName() + "\"!" );
+            }
             market.addArea(area);
         } catch (ValidationException | FileNotFoundException | XMLException | XMLParseException e) {
             message = e.getMessage();
@@ -113,7 +117,7 @@ public class Controller {
             throw new OrderValidationException(err.toString());
         }
 
-        int orderId = area.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, store.getId()));
+        int orderId = area.receiveOrder(new Order(customerId, area.getId(), productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, store.getId(), store.getName()));
         Customer orderingCustomer = this.getCustomerById(customerId);
         Customer storeOwner = this.getCustomerByName(store.getOwnerName());
         storeOwner.addNotification(orderingCustomer.getName() + " ordered from " + store.getName());
@@ -201,8 +205,13 @@ public class Controller {
 
     // TODO: NOAM: Why do we init customer with (0,0) location and not get it from argument?
     public boolean addCustomer(String username, String role) {
-        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0), Customer.Role.valueOf(role.toUpperCase()));
-        return this.market.addCustomer(customer);
+        if (!this.market.isCustomerExistByName(username)) {
+            Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0), Customer.Role.valueOf(role.toUpperCase()));
+            return this.market.addCustomer(customer);
+        }
+        else {
+            return false;
+        }
     }
 
     public Customer getCustomerByName(String userName) {
@@ -273,11 +282,39 @@ public class Controller {
         List<Discount> allMatchingDiscounts = this.market.getAreaById(areaId)
                 .getStoreById(storeId)
                 .getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
-        for (String discountName : discountNameToProductIdInOffer.keySet()) {
-            OptionalInt firstFoundIndex = IntStream.range(0, allMatchingDiscounts.size()).filter(i -> allMatchingDiscounts.get(i).getName().equals(discountName)).findFirst();
-            firstFoundIndex.ifPresent(index -> allMatchingDiscounts.remove(index));
+//        allMatchingDiscounts.stream()
+//                .filter(discount -> !discountNameToProductIdInOffer.get(discount.getName()).contains(discount.getProductId()))
+                // for each discount available in allmatching we need to substruct
+        //for (discountNameToProductIdInOffer.get(discount.getName()).size())
+//        for (Map.Entry<String, List<Integer>> entry : discountNameToProductIdInOffer.entrySet()) {
+//            if (discountNameToProductIdInOffer.containsKey(entry.getKey())) {
+//                for (int i = 0 ; i < discountNameToProductIdInOffer.get(discount.getName()).size() ; i++) {
+//                    if (allMatchingDiscounts.contains(discount))
+//                }
+//                // for entry in discountName..
+//                //
+//            }
+//        }
+//        List<Discount> discountsInRequest = allMatchingDiscounts.stream().filter(discount -> discountNameToProductIdInOffer.containsKey(discount.getName()))
+//                .collec
+        List<Discount> uniqueDiscountsUsed = discountNameToProductIdInOffer.keySet().stream()
+                .map(discountName -> this.getDiscountByName(areaId, storeId, discountName))
+                .collect(Collectors.toList());
+
+        for (Discount discount : uniqueDiscountsUsed) {
+            for (int i = 0; i < discountNameToProductIdInOffer.get(discount.getName()).size() ; i++) {
+                allMatchingDiscounts.remove(discount);
+            }
         }
+//        for (String discountName : discountNameToProductIdInOffer.keySet()) {
+//            OptionalInt firstFoundIndex = IntStream.range(0, allMatchingDiscounts.size()).filter(i -> allMatchingDiscounts.get(i).getName().equals(discountName)).findFirst();
+//            firstFoundIndex.ifPresent(index -> allMatchingDiscounts.remove(index));
+//        }
         return allMatchingDiscounts;
+    }
+
+    private Discount getDiscountByName(int areaId, int storeId, String discountName) {
+        return this.market.getStoreDiscountByName(areaId, storeId, discountName);
     }
 
     public List<Customer> getAllCustomers() {
@@ -320,6 +357,13 @@ public class Controller {
         Area area = this.getAreaById(areaId);
         Store store = area.getStoreById(storeId);
         int orderId = this.makeOrderForStore(area, store, date, uuid, productQuantityPairsWithOffers);
+
+        // withdraw from balance
+        Customer consumer = this.market.getCustomerById(uuid);
+        Customer owner = this.market.getStoreOwner(areaId, storeId);
+        double amount = this.market.getAreaById(areaId).getOrderInvoice(orderId).getTotalPrice();
+        this.market.chargePurchase(consumer, owner, amount, date);
+
         return orderId;
     }
 
@@ -329,5 +373,13 @@ public class Controller {
 
     public StoreProduct getStoreProductById(int areaId, int storeId, int productId) {
         return this.market.getStoreProductById(areaId, storeId, productId);
+    }
+
+    public boolean isAreaOwner(int areaId, Customer customer) {
+        return this.getAreaById(areaId).getOwnerName().equals(customer.getName());
+    }
+
+    public List<OrderInvoice> getOrdersByCustomerId(int uuid) {
+        return this.market.getOrdersByCustomerId(uuid);
     }
 }

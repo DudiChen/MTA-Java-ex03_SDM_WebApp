@@ -81,6 +81,36 @@ public class Market {
     }
 
     public StoreProduct getStoreProductById(int areaId, int storeId, int productId) {
-        return this.idToArea.get(areaId).getStoreById(storeId).getStoreProductById(storeId);
+        return this.idToArea.get(areaId).getStoreById(storeId).getSoldProductById(productId);
+    }
+
+    public Discount getStoreDiscountByName(int areaId, int storeId, String discountName) {
+        return this.getAreaById(areaId).getStoreById(storeId).getDiscountByName(discountName);
+    }
+
+    public boolean isCustomerExistByName(String username) {
+        return this.idToCustomer.values().stream().anyMatch(customer -> customer.getName().equals(username));
+    }
+
+    public boolean isAreaExistsByName(String areaName) {
+        return this.idToArea.values().stream().anyMatch(area -> area.getName().equals(areaName));
+    }
+
+    public Customer getStoreOwner(int areaId, int storeId) {
+        String ownerName = this.getAreaById(areaId).getStoreById(storeId).getOwnerName();
+        return this.idToCustomer.values().stream().filter(customer -> customer.getName().equals(ownerName)).findFirst().orElse(null);
+    }
+
+    public void chargePurchase(Customer consumer, Customer owner, double amount, Date date) {
+        consumer.addTransaction(new Transaction(Transaction.TransactionType.EXPENSE, amount, date, consumer, owner));
+        owner.addTransaction(new Transaction(Transaction.TransactionType.EARNING, amount, date, consumer, owner));
+    }
+
+    public List<OrderInvoice> getOrdersByCustomerId(int uuid) {
+        return this.idToArea.values().stream()
+                .map(area -> area.getOrdersHistory())
+                .flatMap(orders -> orders.stream())
+                .filter(orderInvoice -> orderInvoice.getCustomerId() == uuid)
+                .collect(Collectors.toList());
     }
 }

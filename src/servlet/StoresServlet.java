@@ -50,9 +50,10 @@ public class StoresServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String uuid = body.get("uuid").getAsString();
-        List<Store> stores = Controller.getInstance().getAllStoresInArea(Integer.parseInt(areaId));
-        Customer customer = Controller.getInstance().getCustomerById(Integer.parseInt(uuid));
-        if(customer.getRole().equals(Customer.Role.SELLER)) {
+        Controller controller = Controller.getInstance();
+        List<Store> stores = controller.getAllStoresInArea(Integer.parseInt(areaId));
+        Customer customer = controller.getCustomerById(Integer.parseInt(uuid));
+        if(customer.getRole().equals(Customer.Role.SELLER) && !controller.isAreaOwner(Integer.parseInt(areaId), customer)) {
             stores = stores.stream().filter(store -> store.getOwnerName().equals(customer.getName())).collect(Collectors.toList());
         }
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::new).collect(Collectors.toList());

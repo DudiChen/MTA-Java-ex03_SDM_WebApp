@@ -5,6 +5,7 @@ import entity.Product;
 import jaxb.generated.*;
 import util.ErrorMessage;
 
+import javax.sound.midi.ControllerEventListener;
 import javax.xml.bind.ValidationException;
 import java.awt.*;
 import java.util.*;
@@ -58,7 +59,7 @@ public class DataValidationUtils {
         boolean foundNonExistingDiscountsProductIdsInStores = checkNonExistingDiscountsProductIdsInStores(errorMessage, sdmStores);
 
         // Check invalid conditions and throw exception accordingly:
-        if (foundInvalidStoreCoordinates || foundLocationDuplicates
+        if ( foundInvalidStoreCoordinates || foundLocationDuplicates
                 || foundStoreIdDuplicates || foundProductIdDuplicates || foundStoreProductsDuplicates || foundNonExistingDiscountsProductIdsInStores) {
             throw new ValidationException(errorMessage.getMessage());
         }

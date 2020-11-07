@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,12 +36,12 @@ public class ServletUtils {
     }
 
     public static String formatDateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         return formatter.format(date);
     }
 
     public static Date formatStringToDate(String dateString) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         try {
             date = formatter.parse(dateString);
@@ -84,7 +86,7 @@ public class ServletUtils {
             Product product = Controller.getInstance().getAreaProductById(Integer.parseInt(areaId), Integer.parseInt(pair.getKey()));
             if (product.getPurchaseMethod() == Product.PurchaseMethod.WEIGHT) {
                 // by grams
-                quantity = pair.getValue() / 1000;
+                quantity = pair.getValue() / 1000.0;
             }
             productIdToQuantity2.put(product.getId(), quantity);
         }

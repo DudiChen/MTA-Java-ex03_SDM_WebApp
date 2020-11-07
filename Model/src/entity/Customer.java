@@ -76,7 +76,12 @@ public class Customer {
     }
 
     public void addTransaction(Transaction newTransaction) {
-        this.balance +=  newTransaction.getAmount();
+        if (newTransaction.getTransactionType().equals(Transaction.TransactionType.EXPENSE)) {
+            this.balance -= newTransaction.getAmount();
+        }
+        else {
+            this.balance +=  newTransaction.getAmount();
+        }
         this.transactionHistory.add(newTransaction);
     }
 

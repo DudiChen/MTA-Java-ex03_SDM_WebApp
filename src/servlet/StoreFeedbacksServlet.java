@@ -37,7 +37,7 @@ public class StoreFeedbacksServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        String uuid = body.get("uuid").getAsString();
+//        String uuid = body.get("uuid").getAsString();
 
         List<Feedback> feedbacks = Controller.getInstance().getStoreFeedbacks(Integer.parseInt(areaId), Integer.parseInt(storeId));
         List<StoreFeedbackDTO> storeFeedbackDTOs = feedbacks.stream().map(StoreFeedbackDTO::new).collect(Collectors.toList());

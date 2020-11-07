@@ -12,11 +12,14 @@ public class Order {
     List<Discount.Offer> offersTaken;
     Point destination;
     Date deliveryDate;
+    int areaId;
     int storeId;
+    String storeName;
     int customerId;
     int id;
 
-    public Order(int customerId, List<Pair<Integer, Double>> productIdsToQuantity, List<Discount.Offer> offersTaken, Point destination, Date deliveryDate, int storeId) {
+    public Order(int customerId, int areaId, List<Pair<Integer, Double>> productIdsToQuantity, List<Discount.Offer> offersTaken, Point destination, Date deliveryDate, int storeId, String storeName) {
+        this.areaId = areaId;
         this.customerId =  customerId;
         this.productIdsToQuantity = productIdsToQuantity;
         this.offersTaken = offersTaken;
@@ -25,6 +28,19 @@ public class Order {
         this.id = this.hashCode();
         this.id = MarketUtils.generateId();
         this.storeId = storeId;
+        this.storeName = storeName;
+    }
+
+    public int getAreaId() {
+        return areaId;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
     }
 
     // TODO: use customerId for InvoiceOrder Conversion and display
@@ -50,9 +66,5 @@ public class Order {
 
     public int getId() {
         return id;
-    }
-
-    public int getStoreId() {
-        return storeId;
     }
 }

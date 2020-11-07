@@ -3,6 +3,7 @@ package entity;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Discount {
     public String getName() {
@@ -19,6 +20,19 @@ public class Discount {
         this.productIdQuantityPair = new Pair<>(productId, quantity);
         this.operator = operator;
         this.offers = offers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Discount)) return false;
+        Discount discount = (Discount) o;
+        return getName().equals(discount.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
     public List<Offer> getOffers() {

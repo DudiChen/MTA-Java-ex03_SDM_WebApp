@@ -229,7 +229,21 @@ public class Store {
         return this.feedbacks;
     }
 
-    public StoreProduct getStoreProductById(int storeId) {
-        return this.stock.getSoldProductById(storeId);
+    public StoreProduct getSoldProductById(int productId) {
+        return this.stock.getSoldProductById(productId);
+    }
+
+    public Discount getDiscountByName(String discountName) {
+        Discount result = null;
+        for (Discount discount : this.productIdToDiscounts.values().stream().flatMap(Collection::stream).collect(Collectors.toList())) {
+            if (discount.getName().equals(discountName)) {
+                result = discount;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public void getOwner() {
     }
 }

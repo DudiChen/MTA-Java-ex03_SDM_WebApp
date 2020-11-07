@@ -105,6 +105,7 @@ public class Area {
 
                 this.idToOrderInvoice.put(order.getId(),
                 new OrderInvoice(
+                        order.getAreaId(),
                         order.getId(),
                         order.getCustomerId(),
                         invoiceProducts,
@@ -112,6 +113,8 @@ public class Area {
                         shipmentCost + totalPrice,
                         order.getDeliveryDate(),
                         order.getStoreId(),
+                        order.getStoreName(),
+                        order.getDestination(),
                         this.idToStore.get(order.getStoreId()).getShipmentCost(order.getDestination()))
         );
         approveOrder(order.getId());

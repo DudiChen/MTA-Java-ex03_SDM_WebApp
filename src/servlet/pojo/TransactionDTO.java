@@ -18,6 +18,6 @@ public class TransactionDTO {
         this.date = ServletUtils.formatDateToString(transaction.getDate());
         this.amount = transaction.getAmount();
         this.balanceBefore = transaction.getPreviousBalance();
-        this.balanceAfter = this.balanceBefore + transaction.getAmount();
+        this.balanceAfter = transaction.getAfterBalance();
     }
 }

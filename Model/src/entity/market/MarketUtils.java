@@ -3,6 +3,8 @@ package entity.market;
 import entity.Area;
 import entity.Store;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -20,5 +22,11 @@ public class MarketUtils {
     public static int generateIdForArea(Market market) {
         int max = market.getAllAreas().stream().map(Area::getId).mapToInt(v->v).max().orElse(0);
         return max + 1;
+    }
+
+    public static double roundDoublePercision(double number) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return Double.parseDouble(df.format(number));
     }
 }

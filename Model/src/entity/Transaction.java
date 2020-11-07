@@ -9,10 +9,12 @@ public class Transaction {
     private Customer issuedCustomer;
     private Date date;
     private double previousBalance;
+    private double afterBalance;
 
     public Transaction(TransactionType transactionType, double amount, Date date, Customer issuingCustomer, Customer issuedCustomer) {
         this.amount = amount;
-        this.previousBalance = issuingCustomer.getBalance();
+        this.previousBalance = transactionType == TransactionType.EARNING ? issuedCustomer.getBalance() : issuingCustomer.getBalance();
+        this.afterBalance = transactionType == TransactionType.EXPENSE ? this.previousBalance - amount : this.previousBalance + amount;
         this.transactionType = transactionType;
         this.date = date;
         this.issuingCustomer = issuingCustomer;
@@ -41,6 +43,10 @@ public class Transaction {
 
     public double getPreviousBalance() {
         return previousBalance;
+    }
+
+    public double getAfterBalance() {
+        return this.afterBalance;
     }
 
     public enum TransactionType {

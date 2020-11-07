@@ -29,6 +29,10 @@ public class SignupServlet extends HttpServlet {
         boolean isSuccessfullyAdded = Controller.getInstance().addCustomer(username, role);
         if(!isSuccessfullyAdded) {
             reply.addProperty("errorMessage", "error registering user");
+            reply.addProperty("isValid", "false");
+        }
+        else {
+            reply.addProperty("isValid", "true");
         }
         response.getWriter().write(reply.toString());
         response.getWriter().close();
