@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/SDM/precache-manifest.1b65688a7f5cb0023f74d0461e64aff9.js"
+  "/SDM/precache-manifest.c050c222a5f53319feff250d511bd7ae.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "qux-todo-example"});
